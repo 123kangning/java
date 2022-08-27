@@ -1,5 +1,7 @@
 package project;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -7,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
+@Slf4j
 public class MyThreadPool implements MyPool {
     private static MyBlockingQueue<Runnable> queue = new MyArrayBlockingQueue<>(1000);
     private final HashSet<Worker> workers = new HashSet<>();
@@ -79,7 +81,8 @@ public class MyThreadPool implements MyPool {
                 thread.interrupt();
             }
             for (Thread thread : listThread) {
-                System.out.println(thread.isAlive());
+                log.debug(String.valueOf(thread.isAlive()));
+//                System.out.println(thread.isAlive());
 //                System.out.println(queue.size());
             }
             return queue;
