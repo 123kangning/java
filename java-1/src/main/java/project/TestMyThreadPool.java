@@ -9,10 +9,10 @@ public class TestMyThreadPool {
         //ThreadPoolExecutor exec = new ThreadPoolExecutor(0, 5, 1, TimeUnit.NANOSECONDS, ans);
         MyPool exec = new MyThreadPool(3, 10, 1, TimeUnit.NANOSECONDS);
         //ExecutorService exec = Executors.newCachedThreadPool();
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 10000; i++) {
             exec.execute(new Count(i));
         }
-        TimeUnit.MILLISECONDS.sleep(1000);
+        TimeUnit.SECONDS.sleep(10);
         ans = exec.shutdown();
         //exec.shutdown();
 //        System.out.println("---------------------------------------------------");
@@ -32,7 +32,7 @@ public class TestMyThreadPool {
 }
 
 class Count implements Runnable {
-    static int count = 1;
+    static int count =0;
     private int i;
 
     public Count(int i) {
@@ -42,6 +42,9 @@ class Count implements Runnable {
     public void run() {
 //        count++;
 //        if (count % 100 == 0) System.out.println(count);
-        System.out.println(i + " | " + Thread.currentThread().getName() + "~~~~~~~~~ " + count++);
+        System.out.println("分配任务索引"+i + " | " + Thread.currentThread().getName() + "~~~~~~~~~ 成功执行任务索引" + count++);
+/*        if(count==10000){
+            System.out.println("finish ~~~~~~~~~~~~~~~~~~~----------------------------------finish --------------");
+        }*/
     }
 }

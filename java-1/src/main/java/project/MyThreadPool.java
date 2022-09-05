@@ -80,11 +80,12 @@ public class MyThreadPool implements MyPool {
             for (Thread thread : listThread) {
                 thread.interrupt();
             }
-            for (Thread thread : listThread) {
+            //测试coreThread是否还存活
+/*            for (Thread thread : listThread) {
                 log.debug(String.valueOf(thread.isAlive()));
-//                System.out.println(thread.isAlive());
-//                System.out.println(queue.size());
-            }
+                System.out.println(thread.isAlive());
+                System.out.println(queue.size());
+            }*/
             return queue;
         } finally {
             lock.unlock();

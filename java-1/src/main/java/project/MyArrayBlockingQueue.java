@@ -70,8 +70,8 @@ public class MyArrayBlockingQueue<E> implements MyBlockingQueue<E> {
                 }
                 time = notEmpty.awaitNanos(time);
             }
-            E ans = (E) meal[end];
-            end = (end + 1) % len;
+            E ans = (E) meal[start];
+            start = (start + 1) % len;
             return ans;
         } catch (InterruptedException e) {
             System.out.println("poll start = " + start + " end = " + end);
