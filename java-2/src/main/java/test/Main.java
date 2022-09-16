@@ -1,44 +1,24 @@
 package test;
 
+import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Scanner;
 
-
-/* 请在这里给出学生类Student的定义 */
 public class Main {
-
     public static void main(String[] args) {
-        Student stu1 = new Student(1, "Bill", 87);
-        stu1.print();
+        Scanner scanner=new Scanner(System.in);
+        String[] s1=scanner.nextLine().split("-"),s2=scanner.nextLine().split("-");
 
-        Student stu2 = new Student(2, "Adam", 91);
-        stu2.print();
 
-        Student stu3 = new Student(3, "David", 96);
-        stu3.print();
 
-        Student.average();
-    }
-}
+        long day1= LocalDate.of(Integer.parseInt(s1[0]),Integer.parseInt(s1[1]),Integer.parseInt(s1[2])).toEpochDay(),
+                day2=LocalDate.of(Integer.parseInt(s2[0]),Integer.parseInt(s2[1]),Integer.parseInt(s2[2])).toEpochDay();
 
-class Student{
-    int number;
-    String name;
-    float score;
-    static int count=0;
-    static double sum=0.0;
-    public Student(int number,String name,float score){
-        this.number=number;
-        this.name=name;
-        this.score=score;
-        count++;
-        sum+=score;
-    }
-    public static void average(){
-        System.out.printf("sum is %.1f	count is %d\n"+
-                "average is %.6f",sum,count,91.333336);
-    }
-    public void print(){
-        System.out.printf("number: %d name: %s score: %.1f count: %d\n",
-                number,name,score,count);
+        long distance=day2-day1;
+        System.out.println("第一个日期比第二个日期更"+(distance<0?"晚":"早"));
+        distance=Math.abs(distance);
+        System.out.println("两个日期间隔"+distance+"天");
+        System.out.println("两个日期间隔"+distance/7+"周");
     }
 }
