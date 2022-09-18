@@ -8,17 +8,23 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner scanner=new Scanner(System.in);
-        String[] s1=scanner.nextLine().split("-"),s2=scanner.nextLine().split("-");
-
-
-
-        long day1= LocalDate.of(Integer.parseInt(s1[0]),Integer.parseInt(s1[1]),Integer.parseInt(s1[2])).toEpochDay(),
-                day2=LocalDate.of(Integer.parseInt(s2[0]),Integer.parseInt(s2[1]),Integer.parseInt(s2[2])).toEpochDay();
-
-        long distance=day2-day1;
-        System.out.println("第一个日期比第二个日期更"+(distance<0?"晚":"早"));
-        distance=Math.abs(distance);
-        System.out.println("两个日期间隔"+distance+"天");
-        System.out.println("两个日期间隔"+distance/7+"周");
+        String s1,s2;
+        String[] s=new String[2];
+        do{
+            s1=scanner.nextLine();
+            if(s1.equals(""))break;
+            s=s1.split(" ");
+            s1=s[0];
+            s2=s[1];
+            int index=0;
+            while(s1.charAt(index)==s2.charAt(index)){
+                index++;
+            }
+            if(index>0){
+                System.out.println("The common prefix is "+s1.substring(0,index));
+            }else{
+                System.out.println("No common prefix");
+            }
+        }while(scanner.hasNext());
     }
 }
