@@ -1,5 +1,7 @@
 package project;
-
+/*
+* usage : java PathToHuffman inputText outputText
+* */
 import java.io.*;
 import java.math.BigInteger;
 import java.util.*;
@@ -370,6 +372,7 @@ public class Huffman {
 //        long startTime = System.currentTimeMillis(), endTime;
         if (sign == 1) {
             Map<Character, Integer> map = account();
+
             MyTree<Character> tree = new MyTree<>(map);
             tree.root = tree.creatTree(map);
             setCodeForTree(tree.root);
@@ -501,7 +504,9 @@ public class Huffman {
             }
             for (char e : s.toCharArray()) {
                 numCode = numCode.concat(map.get(e));
+                //System.out.println(e+" "+map.get(e));
             }
+
         }
         int i = 0, count = 0;
         while (numCode.charAt(i++) == '0') {

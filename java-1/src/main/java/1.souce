@@ -1,0 +1,33 @@
+public static void main(String... args) throws IOException {
+        checkExist(args);
+        System.out.println("What do you want to do ,1 for compress ,0 for decompression");
+        Scanner input = new Scanner(System.in);
+        int sign = input.nextInt();
+        input.close();
+//        long startTime = System.currentTimeMillis(), endTime;
+        if (sign == 1) {
+            Map<Character, Integer> map = account();
+
+            MyTree<Character> tree = new MyTree<>(map);
+            tree.root = tree.creatTree(map);
+            setCodeForTree(tree.root);
+            Map<Character, String> map1 = new HashMap<>();
+            preCode(tree.root, map1);
+            printToFile(map1);
+        } else {
+            try {
+                restoreTree();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+        }
+//        endTime = System.currentTimeMillis();
+//        System.out.println("spend time is " + (endTime - startTime));
+
+//        for (Map.Entry<Character, String> e : map1.entrySet()) {
+//            System.out.println(e.getKey() + " " + e.getValue());
+//        }
+
+
+    }
