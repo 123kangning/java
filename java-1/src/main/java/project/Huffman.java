@@ -542,7 +542,7 @@ public class Huffman {
 
         map1 = (Map<Character, String>) input.readObject();
 
-        FileOutputStream output = new FileOutputStream(src2);
+        BufferedWriter output=new BufferedWriter(new FileWriter(src2));
         BigInteger code = (BigInteger) input.readObject();
         s = s.concat(code.toString());
         int len = s.length();
