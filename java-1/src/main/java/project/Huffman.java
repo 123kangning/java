@@ -379,12 +379,9 @@ public class Huffman {
         input.close();
         long startTime = System.currentTimeMillis(), endTime;
         if (sign == 1) {
-            long time1 = System.currentTimeMillis(), time11;
             String srcString = readSrc();
             //System.out.println(srcString);
             Map<Character, Integer> map = account(srcString);
-            time11 = System.currentTimeMillis();
-            System.out.println("time1 is " + (time11 - time1));
             MyTree<Character> tree = new MyTree<>(map);
             tree.root = tree.creatTree(map);
             setCodeForTree(tree.root);
@@ -393,7 +390,7 @@ public class Huffman {
             long time2 = System.currentTimeMillis(), time22;
             printToFile(srcString, map1);
             time22 = System.currentTimeMillis();
-            System.out.println("time2 is " + (time22 - time2));
+            System.out.println("time is " + (time22 - time2));
         } else {
             try {
                 restoreTree();
@@ -509,17 +506,22 @@ public class Huffman {
     public static void printToFile(String input, Map<Character, String> map) throws IOException {
         ObjectOutputStream output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(src2)));
 
-        String numCode = "";
+        long time1 = System.currentTimeMillis(), time11;    //1
+
+        StringBuilder numCode=new StringBuilder();
         for (char e : input.toCharArray()) {
-            numCode = numCode.concat(map.get(e));
+            numCode.append(map.get(e));
             //System.out.println(e+" "+map.get(e));
         }
         int i = 0, count = 0;
         while (numCode.charAt(i++) == '0') {
             count++;
         }
-        output.write(count);
+        time11 = System.currentTimeMillis();
+        System.out.println("time1 is " + (time11 - time1)); //1
 
+        long time2 = System.currentTimeMillis(), time22;
+        output.write(count);
         output.writeObject(map);
 
 //        byte[] b=numCode.getBytes();
@@ -536,7 +538,9 @@ public class Huffman {
 //        code = code.shiftRight(1);
         int size=numCode.length()-count;
         output.writeInt(size);
-        output.writeObject(ChToBit(numCode,count));
+        output.writeObject(ChToBit(numCode.toString(),count));
+        time22 = System.currentTimeMillis();
+        System.out.println("time2 is " + (time22 - time2));
         output.close();
     }
     public static int[] ChToBit(String numCode,int start){
