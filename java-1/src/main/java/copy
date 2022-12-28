@@ -534,44 +534,10 @@ public class Huffman {
 //            code = code.shiftLeft(1);
 //        }
 //        code = code.shiftRight(1);
-        int size=numCode.length()-count;
-        output.writeInt(size);
-        output.writeObject(ChToBit(numCode,count));
+        output.writeObject(new BigInteger(numCode));
         output.close();
     }
-    public static int[] ChToBit(String numCode,int start){
-        int len=numCode.length(),index=0,d=0,range=0;
-        int[] num=new int[len/32+1];
 
-        for(int i=start;i<len;i++){
-            range++;
-            if(numCode.charAt(i)=='1'){
-                d|=1;
-            }
-            if(range==32){
-                num[index++]=d;
-                range=d=0;
-            }
-            d<<=1;
-        }
-        if(range>0){
-            d<<=31-range;
-            num[index]=d;
-        }
-        return num;
-    }
-    public static String BitToCh(int[] num,int size){
-        StringBuilder bud=new StringBuilder();
-        for(int n:num){
-            StringBuilder t=new StringBuilder();
-            for(int i=0;i<32;i++){
-                t.append(n&1);
-                n>>=1;
-            }
-            bud.append(t.reverse());
-        }
-        return bud.toString().substring(0,size);
-    }
     public static void restoreTree() throws IOException, ClassNotFoundException {
         ObjectInputStream input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(src1)));
 
@@ -586,10 +552,8 @@ public class Huffman {
         BufferedWriter output = new BufferedWriter(new FileWriter(src2));
         //String t=new String(input.readAllBytes(),"UTF-8");
         //System.out.println(" length = "+length+" "+t);
-        //BigInteger code=(BigInteger)input.readObject();
-        int size=input.readInt();
-        int[] num=(int[])input.readObject();
-        s = s.concat(BitToCh(num,size));
+        BigInteger code=(BigInteger)input.readObject();
+        s = s.concat(code.toString());
         int len = s.length();
 
         for (int i = 0; i < len; i++) {

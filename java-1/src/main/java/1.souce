@@ -1,34 +1,40 @@
-public static void main(String... args) throws IOException {
-        checkExist(args);
-        System.out.println("What do you want to do ,1 for compress ,0 for decompression");
-        Scanner input = new Scanner(System.in);
-        int sign = input.nextInt();
-        input.close();
-//        long startTime = System.currentTimeMillis(), endTime;
-        if (sign == 1) {
-            Map<Character, Integer> map = account();
+        output.close();
+    }
 
-            MyTree<Character> tree = new MyTree<>(map);
-            tree.root = tree.creatTree(map);
-            setCodeForTree(tree.root);
-            Map<Character, String> map1 = new HashMap<>();
-            preCode(tree.root, map1);
-            printToFile(map1);
-        } else {
-            try {
-                restoreTree();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
+    public static void restoreTree() throws IOException, ClassNotFoundException {
+        Map<Character, String> map1 = new HashMap<>();
+        ObjectInputStream input = new ObjectInputStream(new FileInputStream(src1));
+
+        int count = input.read();
+        String s = "";
+        for (int i = 0; i < count; i++) {
+            s = s.concat("0");
+        }
+
+
+        map1 = (Map<Character, String>) input.readObject();
+
+        BufferedWriter output=new BufferedWriter(new FileWriter(src2));
+        BigInteger code = (BigInteger) input.readObject();
+        s = s.concat(code.toString());
+        int len = s.length();
+
+        for (int i = 0; i < len; i++) {
+            for (int L = 1; L <= len / 2 + 1; L++) {
+                int j = L + i;
+                if (j > len) {
+                    break;
+                }
+                String sub = s.substring(i, j);
+                for (Map.Entry<Character, String> e : map1.entrySet()) {
+                    if (sub.equals(e.getValue())) {
+                        output.write(e.getKey());
+                        i += L;
+                        L = 0;
+                    }
+                }
             }
         }
-//        endTime = System.currentTimeMillis();
-//        System.out.println("spend time is " + (endTime - startTime));
-
-//        for (Map.Entry<Character, String> e : map1.entrySet()) {
-//            System.out.println(e.getKey() + " " + e.getValue());
-//        }
-
-
+        output.close();
     }
-    阿方索丢哦复活节哈反而哦流放哈绿色科技互联网i啊u日渐恶化官方i欧陆
+}
