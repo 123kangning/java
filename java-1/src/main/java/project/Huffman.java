@@ -295,8 +295,8 @@ class MyTree<E> implements Tree<E> {
             if (list.size() == 1) {
                 return list.get(0);
             } else {
-                Node node1 = list.removeFirst();
-                Node node2 = list.removeFirst();
+                Node<E> node1 = list.removeFirst();
+                Node<E> node2 = list.removeFirst();
                 Node<E> node = new Node<>();
                 node.setWeight(node1.getWeight() + node2.getWeight());
                 node.setC(null);
@@ -364,12 +364,12 @@ class Node<E> implements Comparable {
     }
 
     public int compareTo(Object a) {
-        return this.getWeight() - ((Node) a).getWeight();
+        return this.getWeight() - ((Node<E>) a).getWeight();
     }
 }
 
 public class Huffman {
-    static String src1 = "src/main/java/1.souce", src2 = "src/main/java/1.code", src3 = "src/main/java/2.souce";
+    static String src3 = "src/main/java/1.souce", src1 = "src/main/java/1.code", src2 = "src/main/java/2.souce";
 
     public static void main(String... args) throws IOException {
         checkExist(args);
@@ -388,7 +388,7 @@ public class Huffman {
             Map<Character, String> map1 = new HashMap<>();
             preCode(tree.root, map1);
             long time2 = System.currentTimeMillis(), time22;
-            printToFile(srcString, map1);
+            printToFile(srcString, map,map1);
             time22 = System.currentTimeMillis();
             System.out.println("time is " + (time22 - time2));
         } else {
@@ -425,7 +425,10 @@ public class Huffman {
         }
         file = new File(src2);
         if (!file.exists()) {
-            file.createNewFile();
+            boolean fileCreated = file.createNewFile();
+            if (!fileCreated) {
+                throw new IOException("Unable to create file ");
+            }
         }
     }
 
@@ -433,8 +436,8 @@ public class Huffman {
         File file = new File(src1);
         BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
         String encoding = "UTF-8";
-        Long fileLength = file.length();
-        byte[] fileContent = new byte[fileLength.intValue()];
+        long fileLength = file.length();
+        byte[] fileContent = new byte[(int)fileLength];
         in.read(fileContent);
         in.close();
         return new String(fileContent, encoding);
@@ -469,7 +472,6 @@ public class Huffman {
             }
         }
     }
-
     public static void preCode(Node root, Map<Character, String> map) {
         if (root == null) {
             return;
@@ -481,47 +483,20 @@ public class Huffman {
         preCode(root.right, map);
     }
 
-    public static void inCode(Node root, Map<Character, String> map) {
-        if (root == null) {
-            return;
-        }
-        inCode(root.left, map);
-        if (root.getC() != null) {
-            map.put((Character) root.getC(), root.getCode());
-        }
-        inCode(root.right, map);
-    }
-
-    public static void postCode(Node root, Map<Character, String> map) {
-        if (root == null) {
-            return;
-        }
-        postCode(root.left, map);
-        postCode(root.right, map);
-        if (root.getC() != null) {
-            map.put((Character) root.getC(), root.getCode());
-        }
-    }
-
-    public static void printToFile(String input, Map<Character, String> map) throws IOException {
+    public static void printToFile(String input, Map<Character,Integer> map,Map<Character,String> map1) throws IOException {
         ObjectOutputStream output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(src2)));
 
         long time1 = System.currentTimeMillis(), time11;    //1
 
         StringBuilder numCode=new StringBuilder();
         for (char e : input.toCharArray()) {
-            numCode.append(map.get(e));
-            //System.out.println(e+" "+map.get(e));
-        }
-        int i = 0, count = 0;
-        while (numCode.charAt(i++) == '0') {
-            count++;
+            numCode.append(map1.get(e));
+            //System.out.println(e+" "+map1.get(e));
         }
         time11 = System.currentTimeMillis();
         System.out.println("time1 is " + (time11 - time1)); //1
 
-        long time2 = System.currentTimeMillis(), time22;
-        output.write(count);
+        long time2 = System.currentTimeMillis(), time22;    //2
         output.writeObject(map);
 
 //        byte[] b=numCode.getBytes();
@@ -536,11 +511,11 @@ public class Huffman {
 //            code = code.shiftLeft(1);
 //        }
 //        code = code.shiftRight(1);
-        int size=numCode.length()-count;
-        output.writeInt(size);
-        output.writeObject(ChToBit(numCode.toString(),count));
+        output.writeInt(numCode.length());
+        output.writeObject(ChToBit(numCode.toString(),0));
+        //System.out.println("numCode = "+numCode); //!!!!!!!!!!!!!!
         time22 = System.currentTimeMillis();
-        System.out.println("time2 is " + (time22 - time2));
+        System.out.println("time2 is " + (time22 - time2)); //2
         output.close();
     }
     public static int[] ChToBit(String numCode,int start){
@@ -574,18 +549,17 @@ public class Huffman {
             }
             bud.append(t.reverse());
         }
-        return bud.toString().substring(0,size);
+        return bud.substring(0,size);
     }
     public static void restoreTree() throws IOException, ClassNotFoundException {
         ObjectInputStream input = new ObjectInputStream(new BufferedInputStream(new FileInputStream(src1)));
 
-        int count = input.read();
-        String s = "";
-        for (int i = 0; i < count; i++) {
-            s = s.concat("0");
-        }
+        Map<Character,Integer> map = (Map<Character,Integer>) input.readObject();
+        MyTree<Character> tree = new MyTree<>(map);
+        tree.root = tree.creatTree(map);
+        setCodeForTree(tree.root);
 
-        Map<Character, String> map1 = (Map<Character, String>) input.readObject();
+        long time1 = System.currentTimeMillis(), time11;    //1
 
         BufferedWriter output = new BufferedWriter(new FileWriter(src2));
         //String t=new String(input.readAllBytes(),"UTF-8");
@@ -593,25 +567,28 @@ public class Huffman {
         //BigInteger code=(BigInteger)input.readObject();
         int size=input.readInt();
         int[] num=(int[])input.readObject();
-        s = s.concat(BitToCh(num,size));
-        int len = s.length();
-
-        for (int i = 0; i < len; i++) {
-            for (int L = 1; L <= len / 2 + 1; L++) {
-                int j = L + i;
-                if (j > len) {
-                    break;
-                }
-                String sub = s.substring(i, j);
-                for (Map.Entry<Character, String> e : map1.entrySet()) {
-                    if (sub.equals(e.getValue())) {
-                        output.write(e.getKey());
-                        i += L;
-                        L = 0;
-                    }
-                }
+        String s = BitToCh(num,size);
+        int len = s.length(),i=0;
+        time11 = System.currentTimeMillis();
+        System.out.println("time1 is " + (time11 - time1)); //1
+        //System.out.println("numCode = "+s); //!!!!!!!!!!!!!!
+        long time2 = System.currentTimeMillis(), time22;    //2
+        StringBuilder bud=new StringBuilder();
+        Node<Character> t=tree.root;
+        while(i<size){
+            if(s.charAt(i++)=='0'){
+                t=t.left;
+            }else{
+                t=t.right;
+            }
+            if(t.left==null&&t.right==null){
+                bud.append(t.getC());
+                t=tree.root;
             }
         }
+        output.write(bud.toString());
+        time22 = System.currentTimeMillis();
+        System.out.println("time2 is " + (time22 - time2)); //2
         output.close();
     }
 }
