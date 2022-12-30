@@ -1,10 +1,9 @@
-package project;
 /*
  * usage : java PathToHuffman inputText outputText
  * */
+package project;
 
 import java.io.*;
-import java.math.BigInteger;
 import java.util.*;
 
 interface Tree<E> {
@@ -369,7 +368,7 @@ class Node<E> implements Comparable {
 }
 
 public class Huffman {
-    static String src3 = "src/main/java/1.souce", src1 = "src/main/java/1.code", src2 = "src/main/java/2.souce";
+    static String src1 = "../1.souce", src2 = "../1.code";
 
     public static void main(String... args) throws IOException {
         checkExist(args);
@@ -413,7 +412,6 @@ public class Huffman {
         if (args.length == 2) {
             src1 = args[0];
             src2 = args[1];
-//            src3 = args[2];
         } else {
             System.out.println("error : args is error");
             System.exit(1);
@@ -499,21 +497,10 @@ public class Huffman {
         long time2 = System.currentTimeMillis(), time22;    //2
         output.writeObject(map);
 
-//        byte[] b=numCode.getBytes();
-//        int length=b.length;
-//        System.out.println(" length = "+length+" StringLength = " +numCode.length());
-//        for (char e : numCode.toCharArray()) {
-//            if (e == '0') {
-//                code = code.or(new BigInteger("0"));
-//            } else {
-//                code = code.or(new BigInteger("1"));
-//            }
-//            code = code.shiftLeft(1);
-//        }
-//        code = code.shiftRight(1);
         output.writeInt(numCode.length());
         output.writeObject(ChToBit(numCode.toString(),0));
-        //System.out.println("numCode = "+numCode); //!!!!!!!!!!!!!!
+        //这里可以打印出编码后的01字符串!!!
+        //System.out.println("numCode = "+numCode);
         time22 = System.currentTimeMillis();
         System.out.println("time2 is " + (time22 - time2)); //2
         output.close();
@@ -562,9 +549,7 @@ public class Huffman {
         long time1 = System.currentTimeMillis(), time11;    //1
 
         BufferedWriter output = new BufferedWriter(new FileWriter(src2));
-        //String t=new String(input.readAllBytes(),"UTF-8");
-        //System.out.println(" length = "+length+" "+t);
-        //BigInteger code=(BigInteger)input.readObject();
+
         int size=input.readInt();
         int[] num=(int[])input.readObject();
         String s = BitToCh(num,size);
